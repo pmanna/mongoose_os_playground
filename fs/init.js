@@ -6,6 +6,15 @@ load('api_pwm.js');
 load('api_adc.js');
 load('api_esp32_touchpad.js');
 
+// Ensure mDNS is enabled
+if (!Cfg.get('dns_sd.enable')) {
+  Cfg.set({dns_sd:{enable:true}});
+  
+  print("Reset to active mDNS");
+  
+  Sys.reboot(100000);
+}
+
 // Touch RPC calls
 RPC.addHandler('Touch.Enable', function(args) {
   if (typeof(args) === 'object' && typeof(args.enable) === 'boolean') {
@@ -32,6 +41,55 @@ RPC.addHandler('Touch.Read', function(args) {
     }
   } else {
     return {error: -1, message: 'Bad request. Expected: {"pin": num}'};
+  }
+});
+
+// ADC RPC calls
+RPC.addHandler('ADC.Enable', function(args) {
+  if (typeof(args) === 'object' && typeof(args.pin) === 'number') {
+    return {success: ADC.enable(args.pin)};
+  } else {
+    return {error: -1, message: 'Bad request. Expected: {"pin": num}'};
+  }
+});
+
+RPC.addHandler('ADC.Read', function(args) {
+  if (typeof(args) === 'object' && typeof(args.pin) === 'number') {
+    return {value: ADC.read(args.pin)};
+  } else {
+    return {error: -1, message: 'Bad request. Expected: {"pin": num}'};
+  }
+});
+
+// PWM RPC call
+RPC.addHandler('PWM.Set', function(args) {
+  let frequency = 50;
+  let duty = 0.5;
+  
+  if (typeof(args) === 'object' && typeof(args.pin) === 'number') {
+    if (typeof(args.frequency) === 'number' && args.frequency > 0) {
+      frequency = args.frequency;
+    }
+     if (typeof(args.duty) === 'number' && args.duty >= 0.0 && args.duty <= 1.0) {
+      duty = args.duty;
+    }
+   return {success: PWM.set(args.pin,frequency,duty)};
+  } else {
+    return {error: -1, message: 'Bad request. Expected: {"pin": num[,"frequency":N,"duty":N]}'};
+  }
+});
+
+RPC.addHandler('Servo.Set', function(args) {
+  let frequency = 50;
+  let dutyMin = 0.025;
+  let dutyRange = 0.09;
+  
+  if (typeof(args) === 'object' && typeof(args.pin) === 'number' && typeof(args.angle) === 'number') {
+    if (args.angle >= 0 && args.angle <= 180) {
+      return {success: PWM.set(args.pin,frequency,dutyMin + dutyRange * (args.angle / 180.0))};
+    }
+  } else {
+    return {error: -1, message: 'Bad request. Expected: {"pin": num,"angle":N}'};
   }
 });
 
