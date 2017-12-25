@@ -116,7 +116,7 @@ RPC.addHandler('Wifi.Enable', function(args) {
 
 // Button is wired to GPIO pin 0
 // When brought to 0, it resets WiFi to AP
-GPIO.set_button_handler(button, GPIO.PULL_UP, GPIO.INT_EDGE_NEG, 200, function() {
+GPIO.set_button_handler(Cfg.get('pins.button'), GPIO.PULL_UP, GPIO.INT_EDGE_NEG, 200, function() {
   Cfg.set({wifi: {sta: {enable: false}, ap: {enable: true}}});  // Enable WiFi AP mode, disable STA
   
   print("Reset to Access Point mode");
