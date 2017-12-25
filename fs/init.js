@@ -15,35 +15,6 @@ if (!Cfg.get('dns_sd.enable')) {
   Sys.reboot(100000);
 }
 
-// Touch RPC calls
-RPC.addHandler('Touch.Enable', function(args) {
-  if (typeof(args) === 'object' && typeof(args.enable) === 'boolean') {
-    TouchPad.init();
-    TouchPad.setVoltage(TouchPad.HVOLT_2V4, TouchPad.LVOLT_0V8, TouchPad.HVOLT_ATTEN_1V5);
-  } else {
-    TouchPad.deinit();
-  }
-    
-  return {success:true};
-});
-
-RPC.addHandler('Touch.Read', function(args) {
-  if (typeof(args) === 'object' && typeof(args.pin) === 'number') {
-    let ts = TouchPad.GPIO[args.pin];
-    
-    if (ts === undefined) {
-      return {error: -2, message: 'Invalid Pin: not touch-enabled'};
-    } else {
-      TouchPad.config(ts, 0);
-      Sys.usleep(100000);
-      
-      return {pin:ts,value: TouchPad.read(ts)};
-    }
-  } else {
-    return {error: -1, message: 'Bad request. Expected: {"pin": num}'};
-  }
-});
-
 // ADC RPC calls
 RPC.addHandler('ADC.Enable', function(args) {
   if (typeof(args) === 'object' && typeof(args.pin) === 'number') {
@@ -79,6 +50,7 @@ RPC.addHandler('PWM.Set', function(args) {
   }
 });
 
+// Servo RPC call
 RPC.addHandler('Servo.Set', function(args) {
   let frequency = 50;
   let dutyMin = 0.025;
@@ -90,6 +62,39 @@ RPC.addHandler('Servo.Set', function(args) {
     }
   } else {
     return {error: -1, message: 'Bad request. Expected: {"pin": num,"angle":N}'};
+  }
+});
+
+// Touch RPC calls
+RPC.addHandler('Touch.Enable', function(args) {
+  if (typeof(args) === 'object' && typeof(args.enable) === 'boolean') {
+  	if (args.enable) {
+      TouchPad.init();
+      TouchPad.setVoltage(TouchPad.HVOLT_2V4, TouchPad.LVOLT_0V8, TouchPad.HVOLT_ATTEN_1V5);
+    } else {
+      TouchPad.deinit();
+    }
+    
+  	return {enabled:args.enable};
+  } else {
+    return {error: -1, message: 'Bad request. Expected: {"enable": Bool}'};
+  }
+});
+
+RPC.addHandler('Touch.Read', function(args) {
+  if (typeof(args) === 'object' && typeof(args.pin) === 'number') {
+    let ts = TouchPad.GPIO[args.pin];
+    
+    if (ts === undefined) {
+      return {error: -2, message: 'Invalid Pin: not touch-enabled'};
+    } else {
+      TouchPad.config(ts, 0);
+      Sys.usleep(100000);
+      
+      return {touch_pin:ts,value: TouchPad.read(ts)};
+    }
+  } else {
+    return {error: -1, message: 'Bad request. Expected: {"pin": num}'};
   }
 });
 
