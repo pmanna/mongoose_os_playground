@@ -132,7 +132,3 @@ The app enables the mDNS capability: this to ease future remote access without t
 
 - Install and start [mos tool](https://mongoose-os.com/software.html)
 - Follow instructions in [Mongoose OS Docs](https://mongoose-os.com/docs/book/build.html)
-
-<p align="center">
-  <img src="https://coderdojo.com/wp-content/uploads/2016/08/CDF.png" width="75%">
-</p>
