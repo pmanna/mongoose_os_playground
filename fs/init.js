@@ -6,12 +6,14 @@ load('api_adc.js');
 load('api_rpc.js');
 
 let platform = Cfg.get('device.platform');
+let customCode = '';
 
-//if (platform === 'esp32') {
-  load('rpc_touchpad.js');
-//} else if (platform === 'esp8266') {
-//  load('rpc_d1motor.js');
-//}
+if (platform === 'esp32') {
+  customCode = 'rpc_touchpad.js';
+} else if (platform === 'esp8266') {
+  customCode = 'rpc_d1motor.js';
+}
+load(customCode);
 
 // ADC RPC calls
 RPC.addHandler('ADC.Enable', function(args) {

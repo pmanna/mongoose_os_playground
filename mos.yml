@@ -6,7 +6,7 @@ libs_version: ${mos.version}
 modules_version: ${mos.version}
 mongoose_os_version: ${mos.version}
 
-platforms: [ esp32 ]
+platforms: [ esp32,esp8266 ]
 
 config_schema:
   - ["i2c.enable", true]
