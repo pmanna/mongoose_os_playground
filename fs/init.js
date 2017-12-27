@@ -18,7 +18,7 @@ load(customCode);
 // ADC RPC calls
 RPC.addHandler('ADC.Enable', function(args) {
   if (typeof(args) === 'object' && typeof(args.pin) === 'number') {
-    return {success: ADC.enable(args.pin)};
+    return {enable: ADC.enable(args.pin)};
   } else {
     return {error: -1, message: 'Bad request. Expected: {"pin": num}'};
   }
@@ -44,7 +44,7 @@ RPC.addHandler('PWM.Set', function(args) {
      if (typeof(args.duty) === 'number' && args.duty >= 0.0 && args.duty <= 1.0) {
       duty = args.duty;
     }
-   return {success: PWM.set(args.pin,frequency,duty)};
+    return {success: PWM.set(args.pin,frequency,duty)};
   } else {
     return {error: -1, message: 'Bad request. Expected: {"pin": num[,"frequency":N,"duty":N]}'};
   }
@@ -80,7 +80,7 @@ RPC.addHandler('Wifi.Enable', function(args) {
     }
     Sys.reboot(100000);
     
-    return {enabled:Cfg.get('wifi.sta.enable')};
+    return {enable:Cfg.get('wifi.sta.enable')};
   } else {
     return {error: -1, message: 'Bad request. Expected: {"enable":Bool[,"ssid":"name","pass":"xxx"]}'};
   }

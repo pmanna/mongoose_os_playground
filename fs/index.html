@@ -1,8 +1,287 @@
 <html>
-<body>
-<h1 align="center">Welcome to the Mongoose OS Playground</h1>
-<p align="center">
-	<img src="https://coderdojo.com/wp-content/uploads/2016/08/CDF.png"/>
-</p>
+<head>
+	<script>
+	var platform = '';
+	var touchpad_init = false;
+	var motor_init = false;
+	
+	function callRPCService(cmd, params, callback) {
+      var xhttp = new XMLHttpRequest();
+      
+      xhttp.onreadystatechange = function() {
+        if (this.readyState == 4 && this.status == 200) {
+          callback(this.response);
+        }
+      };
+      
+      xhttp.open('POST', 'rpc/' + cmd + '?' + new Date().getTime(), true);
+      xhttp.responseType = 'json';
+      xhttp.send(JSON.stringify(params));
+	}
+	
+	// Discover which platform we're using, to enable/disable features
+	function startup() {
+	  callRPCService('Config.Get',{key:'device'}, function(response) {
+	    if (response !== undefined) {
+	      platform = response.platform;
+	      console.log('Platform is: ' + platform);
+	      
+	      if (platform === 'esp8266') {
+	        // Disable Touchpad
+	        document.getElementById("Touchpad").innerHTML = '';
+	      } else if (platform === 'esp32') {
+	        // Disable D1 Motor Shield
+	        document.getElementById("D1Motor").innerHTML = '';
+	      }
+	    }
+	  });
+	}
+	
+	// Read a value from GPIO
+	function gpioReadValue() {
+	  var pin = parseInt(document.getElementById("GPIO.pin").value);
+	  
+	  callRPCService('GPIO.Read',{pin:pin}, function(response) {
+	    if (response !== undefined) {
+	      if (response.error !== undefined) {
+	        alert(response.message);
+	      } else {
+	        document.getElementById("GPIO.value").value = response.value;
+	      }
+	    }
+	  });
+	}
+	
+	// Write a value to GPIO
+	function gpioWriteValue() {
+	  var pin = parseInt(document.getElementById("GPIO.pin").value);
+	  var value = parseInt(document.getElementById("GPIO.value").value);
+	  
+	  callRPCService('GPIO.Write',{pin:pin, value:value}, function(response) {
+	      if (response !== undefined && response.error !== undefined) {
+	        alert(response.message);
+	      }
+	  });
+	}
+	
+	// Read a value from ADC
+	function adcReadValue() {
+	  var pin = parseInt(document.getElementById("ADC.pin").value);
+	  
+	  callRPCService('ADC.Enable',{pin:pin}, function(response) {
+		if (response === undefined) {
+		  return;
+		}
+		callRPCService('ADC.Read',{pin:pin}, function(response) {
+		  if (response !== undefined) {
+		    if (response.error !== undefined) {
+			  alert(response.message);
+		    } else {
+		      document.getElementById("ADC.value").value = response.value;
+		    }
+		  }
+	    });
+	  });
+	}
+	
+	// Write a value to PWM
+	function pwmWriteValue() {
+	  var pin = parseInt(document.getElementById("PWM.pin").value);
+	  var value = parseInt(document.getElementById("PWM.value").value);
+	  
+	  callRPCService('PWM.Set',{pin:pin, frequency:100, duty:(value / 100.0)}, function(response) {
+	      if (response !== undefined && response.error !== undefined) {
+	        alert(response.message);
+	      }
+	  });
+	}
+	
+	// Write an angle to servo
+	function servoWriteAngle() {
+	  var pin = parseInt(document.getElementById("Servo.pin").value);
+	  var angle = parseInt(document.getElementById("Servo.value").value);
+	  
+	  callRPCService('Servo.Set',{pin:pin, angle: angle}, function(response) {
+	      if (response !== undefined && response.error !== undefined) {
+	        alert(response.message);
+	      }
+	  });
+	}
+	
+	// Read a value from Touchpad (if enabled)
+	function touchReadValue() {
+	  if (!touchpad_init) {
+	    callRPCService('Touch.Enable', {enable:true}, function(response) {
+		  if (response === undefined) {
+		    return;
+		  }
+		  touchpad_init = true;
+		  touchReadValue();
+	    });
+	  } else {
+	    var pin = parseInt(document.getElementById("Touch.pin").value);
+	    
+		callRPCService('Touch.Read',{pin:pin}, function(response) {
+		  if (response !== undefined) {
+		    if (response.error !== undefined) {
+			  alert(response.message);
+		    } else {
+		      document.getElementById("Touch.value").value = response.value;
+		    }
+		  }
+	    });
+	  }
+	}
+	
+	// Move the motor
+	function motorWriteSpeed() {
+	  var motor = parseInt(document.getElementById("D1Motor.motor").value);
+	  
+	  if (!motor_init) {
+	    callRPCService('D1Motor.Enable', {motor:motor, frequency: 1000}, function(response) {
+		  if (response === undefined) {
+		    return;
+		  }
+		  motor_init = true;
+		  motorWriteSpeed();
+	    });
+	  } else {
+	  	var speed = parseInt(document.getElementById("D1Motor.speed").value);
+	    var dir = 2;
+	    
+	    if (speed < 0) {
+	      speed = -speed;
+	      dir = 1;
+	    } else if (speed === 0) {
+	      dir = 0;
+	    }
+	    callRPCService('D1Motor.Move',{motor:motor, dir:dir, speed: speed}, function(response) {
+	      if (response !== undefined && response.error !== undefined) {
+	        alert(response.message);
+	      }
+	    });
+	  }
+	}
+	
+	// Reboots the microcontroller
+	function rebootDevice() {
+	  callRPCService('Sys.Reboot',{delay_ms:500}, function(response) {
+	      if (response !== undefined && response.error !== undefined) {
+	        alert(response.message);
+	      }
+	      touchpad_init = false;
+	      motor_init = false;
+	  });
+	}
+	
+	</script>
+</head>
+<body onLoad='startup();'>
+  <h1 align="center">Welcome to the Mongoose OS Playground</h1>
+  <hr>
+  <div id='GPIO'>
+    <h2>GPIO</h2>
+    <table><tbody>
+      <tr>
+        <td><strong>Pin</strong></td>
+        <td><strong>Value</strong></td>
+        <td>&nbsp;</td>
+        <td>&nbsp;</td>
+      </tr>
+      <tr>
+        <td width="64px"><input type="number" id="GPIO.pin"/></td>
+        <td width="64px"><input type="number" id="GPIO.value"/></td>
+        <td width="72px" align="center"><button type="button" onclick="gpioReadValue()">Read</button></td>
+        <td width="72px" align="center"><button type="button" onclick="gpioWriteValue()">Write</button></td>
+      </tr>
+    </tbody></table>
+    <hr>
+  </div>
+  <div id='ADC'>
+    <h2>ADC</h2>
+    <table><tbody>
+      <tr>
+        <td><strong>Pin</strong></td>
+        <td><strong>Value</strong></td>
+        <td>&nbsp;</td>
+      </tr>
+      <tr>
+        <td width="64px"><input type="number" id="ADC.pin"/></td>
+        <td width="64px"><input type="number" id="ADC.value"/></td>
+        <td width="72px" align="center"><button type="button" onclick="adcReadValue()">Read</button></td>
+      </tr>
+    </tbody></table>
+    <hr>
+  </div>
+  <div id='PWM'>
+    <h2>PWM</h2>
+    <table><tbody>
+      <tr>
+        <td><strong>Pin</strong></td>
+        <td><strong>Value (0-100)</strong></td>
+        <td>&nbsp;</td>
+      </tr>
+      <tr>
+        <td width="64px"><input type="number" id="PWM.pin"/></td>
+        <td width="64px"><input type="number" id="PWM.value"/></td>
+        <td width="72px" align="center"><button type="button" onclick="pwmWriteValue()">Write</button></td>
+      </tr>
+    </tbody></table>
+    <hr>
+  </div>
+  <div id='Servo'>
+    <h2>Servo Motor (SG90)</h2>
+    <table><tbody>
+      <tr>
+        <td><strong>Pin</strong></td>
+        <td><strong>Angle (0-180)</strong></td>
+        <td>&nbsp;</td>
+      </tr>
+      <tr>
+        <td width="64px"><input type="number" id="Servo.pin"/></td>
+        <td width="64px"><input type="number" id="Servo.value"/></td>
+        <td width="72px" align="center"><button type="button" onclick="servoWriteAngle()">Write</button></td>
+      </tr>
+    </tbody></table>
+    <hr>
+  </div>
+  <div id='Touchpad'>
+    <h2>Touchpad</h2>
+    <table><tbody>
+      <tr>
+        <td><strong>Pin</strong></td>
+        <td><strong>Value</strong></td>
+        <td>&nbsp;</td>
+      </tr>
+      <tr>
+        <td width="64px"><input type="number" id="Touch.pin"/></td>
+        <td width="64px"><input type="number" id="Touch.value"/></td>
+        <td width="72px" align="center"><button type="button" onclick="touchReadValue()">Read</button></td>
+      </tr>
+    </tbody></table>
+    <hr>
+  </div>
+  <div id='D1Motor'>
+    <h2>Wemos D1 Motor Shield</h2>
+    <table><tbody>
+      <tr>
+        <td><strong>Motor (0 - 1)</strong></td>
+        <td><strong>Speed (-100 - 100)</strong></td>
+        <td>&nbsp;</td>
+      </tr>
+      <tr>
+        <td width="64px"><input type="number" id="D1Motor.motor"/></td>
+        <td width="64px"><input type="number" id="D1Motor.speed"/></td>
+        <td width="72px" align="center"><button type="button" onclick="motorWriteSpeed()">Write</button></td>
+      </tr>
+    </tbody></table>
+    <hr>
+  </div>
+  <p align="center">
+    <button type="button" onclick="rebootDevice()">Reboot</button>
+  </p>
+  <p align="center">
+    <img src="https://upload.wikimedia.org/wikipedia/en/d/d2/CoderDojo_Original_Roundel_with_Long_Form_Logotype.svg"/>
+  </p>
 </body>
 </html>

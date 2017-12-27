@@ -10,7 +10,7 @@ The app has been developed as a support for the [CoderDojo](https://coderdojo.co
 
 At this time, experiments can be conducted via browser: a web page is presented with various options to play with some relevant RPC calls.
 
-The application eventually supposed to work with a yet unnamed mobile app, similar to [Blynk](http://www.blynk.cc), but for local, direct communication.
+The application is eventually supposed to work with a yet unnamed mobile app, similar to [Blynk](http://www.blynk.cc), but for local, direct communication.
 
 ## Usage
 
@@ -35,7 +35,7 @@ Enables the passed pin for ADC input
 **Returns:**
 
 ```json
- {"success": true/false}
+ {"enable": true/false}
 ```
 #### ADC.Read
 Reads the input for the passed pin as ADC value
@@ -97,7 +97,7 @@ Enables/Disables the TouchPad interface of ESP32.
 **Returns:**
 
 ```json
- {"enabled": true/false}
+ {"enable": true/false}
 ```
 
 #### Touch.Read
@@ -159,7 +159,7 @@ Switches the WiFi connection from AP (default) to STA, optionally setting SSID a
 **Returns:**
 
 ```json
- {"enabled": true/false}
+ {"enable": true/false}
 ```
 
 ## Extras

@@ -27,6 +27,6 @@ RPC.addHandler('D1Motor.Move', function(args) {
     
     return {success: D1Motor.move(handle,args.dir,args.speed)};
   } else {
-    return {error: -1, message: 'Bad request. Expected: {"address": n1,"motor": 0-1,"dir": 0-3,"speed": 0-100}'};
+    return {error: -1, message: 'Bad request. Expected: {["address": n1,]"motor": 0-1,"dir": 0-3,"speed": 0-100}'};
   }
 });
