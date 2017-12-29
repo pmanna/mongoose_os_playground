@@ -11,6 +11,7 @@
 	</style> 
 	<script>
 	var platform = '';
+	var host = '';
 	var touchpad_init = false;
 	var motor_init = false;
 	
@@ -30,9 +31,9 @@
 	
 	// Discover which platform we're using, to enable/disable features
 	function startup() {
-	  callRPCService('Config.Get',{key:'device'}, function(response) {
+	  callRPCService('Config.Get',{}, function(response) {
 	    if (response !== undefined) {
-	      platform = response.platform;
+	      platform = response.device.platform;
 	      console.log('Platform is: ' + platform);
 	      
 	      if (platform === 'esp8266') {
@@ -42,6 +43,12 @@
 	        // Disable D1 Motor Shield
 	        document.getElementById("D1Motor").innerHTML = '';
 	      }
+	      
+	      var mac_id = (response.device.id.split("_"))[1];
+	      var dns_host = response.dns_sd.host_name;
+	      
+	      host = dns_host.replace('??????',mac_id) + '.local';
+	      document.getElementById("hostname").innerHTML = host;
 	    }
 	  });
 	}
@@ -187,6 +194,7 @@
 </head>
 <body onLoad='startup();'>
   <h1 align="center">Welcome to the Mongoose OS Playground</h1>
+  <h4 align="center" id="hostname"></h4>
   <hr>
   <div id='GPIO'>
     <h2>GPIO</h2>
