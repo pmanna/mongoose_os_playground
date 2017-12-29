@@ -28,13 +28,13 @@ Enables the passed pin for ADC input
 
 **Call:**
 
-```json
+```
  {"pin": num}
 ```
 
 **Returns:**
 
-```json
+```
  {"enable": true/false}
 ```
 #### ADC.Read
@@ -42,14 +42,14 @@ Reads the input for the passed pin as ADC value
 
 **Call:**
 
-```json
+```
  {"pin": num}
 ```
 
 **Returns:**
 
-```json
- {"value": <pin level (0-1023)>}
+```
+ {"value": <pin level (0-1023 or 0-4095)>}
 ```
 
 ### PWM
@@ -58,13 +58,13 @@ Sets the passed pin for PWM output, with optional frequency (default 50 Hz) and 
 
 **Call:**
 
-```json
+```
  {"pin": num[,"frequency":N,"duty":N]}
 ```
 
 **Returns:**
 
-```json
+```
  {"success": true/false}
 ```
 
@@ -74,13 +74,13 @@ Rotate the servo motor (tested on typical SG90) on the passed pin by the specifi
 
 **Call:**
 
-```json
+```
  {"pin": num,"angle":N}
 ```
 
 **Returns:**
 
-```json
+```
  {"success": true/false}
 ```
 
@@ -90,13 +90,13 @@ Enables/Disables the TouchPad interface of ESP32.
 
 **Call:**
 
-```json
+```
  {"enable": Bool}
 ```
 
 **Returns:**
 
-```json
+```
  {"enable": true/false}
 ```
 
@@ -105,13 +105,13 @@ Reads the touch value from the given GPIO pin. The value is unfiltered.
 
 **Call:**
 
-```json
+```
  {"pin": num}
 ```
 
 **Returns:**
 
-```json
+```
  {"touch_pin": <ID of the Touch pin>, "value": <raw value of touch>}
 ```
 
@@ -121,13 +121,13 @@ Enables the passed I2C address, default is 48 (a.k.a. 0x30), and initializes it 
 
 **Call:**
 
-```json
+```
  {["address": n1,]"motor": 0-1,"frequency": n2}
 ```
 
 **Returns:**
 
-Returns the initialized motor object or
+The initialized motor object to use in subsequent calls or
 ``` {} ```
 if unsuccessful.
 
@@ -136,13 +136,13 @@ Writes to the given I2C address (that should match the one passed to D1Motor.Ena
 
 **Call:**
 
-```json
+```
  {["address": n1,]"motor": 0-1,"dir": 0-3,"speed": 0-100}
 ```
 
 **Returns:**
 
-```json
+```
  {"success": true/false}
 ```
 
@@ -152,13 +152,13 @@ Switches the WiFi connection from AP (default) to STA, optionally setting SSID a
 
 **Call:**
 
-```json
+```
  {"enable":Bool[,"ssid":"name","pass":"xxx"]}
 ```
 
 **Returns:**
 
-```json
+```
  {"enable": true/false}
 ```
 

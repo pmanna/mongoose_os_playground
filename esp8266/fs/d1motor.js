@@ -13,14 +13,13 @@ let D1Motor = {
   // TODO: Standby is not enabled at the moment
   
   // ## **`D1Motor.create(addr, motor, freq)`**
-  // Create an initialized object 
-  // If stop is true, the bus will be released at the end.
-  // Return value: empty object on error, object to use later if successful
+  // Create an initialized object with the given I2C address, motor and frequency
+  // Return value: empty object on error, motor object to use later if successful
   create: function(addr, motor, freq) {
     let bus = I2C.get();
     
     // D1 Mini Motor Shield has specific pins for I2C
-    // Should be enabled in mos.yml, in case it couldn't uncomment this
+    // Should be enabled in mos.yml, in case it couldn't, uncomment this
     // Cfg.set({i2c:{sda_gpio:4,scl_gpio:5}});
     
     let result  = {};
@@ -52,7 +51,7 @@ let D1Motor = {
 
   // ## **`D1Motor.move(handle, dir, val)`**
   // Moves defined motor in given direction & speed
-  // The handle passed in could be the same returned by D1Motor.create()
+  // The handle passed in should be the same returned by D1Motor.create()
   // Return value: none.
   move: function(handle, dir, speed) {
     let bus = I2C.get();
