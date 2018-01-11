@@ -25,7 +25,7 @@ function callRPCService(cmd, params, callback) {
 // Discover which platform we're using, to enable/disable features
 function startup() {
   callRPCService('Config.Get',{}, function(response) {
-    if (response !== undefined) {
+    if (response != null) {
       platform = response.device.platform;
       console.log('Platform is: ' + platform);
       
@@ -57,7 +57,7 @@ function gpioReadValue() {
   var pin = parseInt(document.getElementById("GPIO.pin").value);
   
   callRPCService('GPIO.Read',{pin:pin}, function(response) {
-    if (response !== undefined) {
+    if (response != null) {
       if (response.error !== undefined) {
         alert(response.message);
       } else {
@@ -73,7 +73,7 @@ function gpioWriteValue() {
   var value = parseInt(document.getElementById("GPIO.value").value);
   
   callRPCService('GPIO.Write',{pin:pin, value:value}, function(response) {
-      if (response !== undefined && response.error !== undefined) {
+      if (response != null && response.error !== undefined) {
         alert(response.message);
       }
   });
@@ -84,11 +84,11 @@ function adcReadValue() {
   var pin = parseInt(document.getElementById("ADC.pin").value);
   
   callRPCService('ADC.Enable',{pin:pin}, function(response) {
-    if (response === undefined) {
+    if (response == null) {
       return;
     }
     callRPCService('ADC.Read',{pin:pin}, function(response) {
-      if (response !== undefined) {
+      if (response != null) {
         if (response.error !== undefined) {
           alert(response.message);
         } else {
@@ -105,7 +105,7 @@ function pwmWriteValue() {
   var value = parseInt(document.getElementById("PWM.value").value);
   
   callRPCService('PWM.Set',{pin:pin, frequency:100, duty:(value / 100.0)}, function(response) {
-      if (response !== undefined && response.error !== undefined) {
+      if (response != null && response.error !== undefined) {
         alert(response.message);
       }
   });
@@ -117,7 +117,7 @@ function servoWriteAngle() {
   var angle = parseInt(document.getElementById("Servo.value").value);
   
   callRPCService('Servo.Set',{pin:pin, angle: angle}, function(response) {
-      if (response !== undefined && response.error !== undefined) {
+      if (response != null && response.error !== undefined) {
         alert(response.message);
       }
   });
@@ -127,7 +127,7 @@ function servoWriteAngle() {
 function touchReadValue() {
   if (!touchpad_init) {
     callRPCService('Touch.Enable', {enable:true}, function(response) {
-      if (response === undefined) {
+      if (response == null) {
         return;
       }
       touchpad_init = true;
@@ -137,7 +137,7 @@ function touchReadValue() {
     var pin = parseInt(document.getElementById("Touch.pin").value);
     
     callRPCService('Touch.Read',{pin:pin}, function(response) {
-      if (response !== undefined) {
+      if (response != null) {
         if (response.error !== undefined) {
           alert(response.message);
         } else {
@@ -154,7 +154,7 @@ function motorWriteSpeed() {
   
   if (!motor_init) {
     callRPCService('D1Motor.Enable', {motor:motor, frequency: 1000}, function(response) {
-      if (response === undefined) {
+      if (response == null) {
         return;
       }
       motor_init = true;
@@ -171,7 +171,7 @@ function motorWriteSpeed() {
       dir = 0;
     }
     callRPCService('D1Motor.Move',{motor:motor, dir:dir, speed: speed}, function(response) {
-      if (response !== undefined && response.error !== undefined) {
+      if (response != null && response.error !== undefined) {
         alert(response.message);
       }
     });
@@ -181,7 +181,7 @@ function motorWriteSpeed() {
 // Reboots the microcontroller
 function rebootDevice() {
   callRPCService('Sys.Reboot',{delay_ms:500}, function(response) {
-      if (response !== undefined && response.error !== undefined) {
+      if (response != null && response.error !== undefined) {
         alert(response.message);
       }
       touchpad_init = false;
