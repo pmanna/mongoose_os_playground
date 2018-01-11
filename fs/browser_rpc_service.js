@@ -15,7 +15,9 @@ function callRPCService(cmd, params, callback) {
     }
   };
   
-  xhttp.open('POST', 'rpc/' + cmd + '?' + new Date().getTime(), true);
+  xhttp.open('POST', 'rpc/' + cmd, true);
+  xhttp.setRequestHeader('Cache-Control','no-cache');
+  xhttp.setRequestHeader('Accept','application/json');
   xhttp.responseType = 'json';
   xhttp.send(JSON.stringify(params));
 }

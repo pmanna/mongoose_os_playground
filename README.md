@@ -166,6 +166,10 @@ Switches the WiFi connection from AP (default) to STA, optionally setting SSID a
 
 The app enables the mDNS capability: this to ease future remote access without the need to know the actual IP address of the microcontroller board. It also uses GPIO 0 as a WiFi reset: when briefly taken to 0, network connection is reset to Access Point.
 
+## Other
+
+The CoderDojo logo is used according to [their terms](http://kata.coderdojo.com/wiki/CoderDojo_Logos_and_Brand_Guidelines)
+
 ## NOTE
 
 The D1Motor code tries to talk with a Wemos D1 Motor Shield: unfortunately, this piece of hardware comes with a buggy firmware, so the application _won't_ work with it out of the box.
