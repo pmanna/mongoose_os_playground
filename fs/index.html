@@ -95,13 +95,12 @@
       <tr>
         <td><strong>Pin</strong></td>
         <td><strong>Value (0-100)</strong></td>
+        <td></td>
       </tr>
       <tr>
         <td><input type="number" id="PWM.pin"/></td>
-        <td><input type="number" id="PWM.value"/></td>
-      </tr>
-      <tr>
-        <td align="center" style="padding-top: 12px;"><a class="btn" onclick="pwmWriteValue()">Write</a></td>
+        <td><input type="range" min="0" max="100" value="0" step="5" id="PWM.input" onchange="pwmWriteValue()"/></td>
+        <td id="PWM.value">0</td>
       </tr>
     </tbody></table>
   </div>
@@ -111,13 +110,12 @@
       <tr>
         <td><strong>Pin</strong></td>
         <td><strong>Angle (0-180)</strong></td>
+        <td></td>
       </tr>
       <tr>
         <td><input type="number" id="Servo.pin"/></td>
-        <td><input type="number" id="Servo.value"/></td>
-      </tr>
-      <tr>
-        <td align="center" style="padding-top: 12px;"><a class="btn" onclick="servoWriteAngle()">Write</a></td>
+        <td><input type="range" min="0" max="180" value="0" step="5" id="Servo.input" onchange="servoWriteAngle()"/></td>
+        <td id="Servo.value">0</td>
       </tr>
     </tbody></table>
   </div>
@@ -143,13 +141,12 @@
       <tr>
         <td><strong>Motor (0 - 1)</strong></td>
         <td><strong>Speed (-100 - 100)</strong></td>
+        <td></td>
       </tr>
       <tr>
         <td><input type="number" id="D1Motor.motor"/></td>
-        <td><input type="number" id="D1Motor.speed"/></td>
-      </tr>
-      <tr>
-        <td align="center" style="padding-top: 12px;"><a class="btn" onclick="motorWriteSpeed()">Write</a></td>
+        <td><input type="range" min="-100" max="100" value="0" step="5" id="D1Motor.input" onchange="motorWriteSpeed()"/></td>
+        <td id="D1Motor.speed">0</td>
       </tr>
     </tbody></table>
   </div>

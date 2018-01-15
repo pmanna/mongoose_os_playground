@@ -102,8 +102,9 @@ function adcReadValue() {
 // Write a value to PWM
 function pwmWriteValue() {
   var pin = parseInt(document.getElementById("PWM.pin").value);
-  var value = parseInt(document.getElementById("PWM.value").value);
+  var value = parseInt(document.getElementById("PWM.input").value);
   
+  document.getElementById("PWM.value").innerHTML = value;
   callRPCService('PWM.Set',{pin:pin, frequency:100, duty:(value / 100.0)}, function(response) {
       if (response != null && response.error !== undefined) {
         alert(response.message);
@@ -114,8 +115,9 @@ function pwmWriteValue() {
 // Write an angle to servo
 function servoWriteAngle() {
   var pin = parseInt(document.getElementById("Servo.pin").value);
-  var angle = parseInt(document.getElementById("Servo.value").value);
+  var angle = parseInt(document.getElementById("Servo.input").value);
   
+  document.getElementById("Servo.value").innerHTML = angle;
   callRPCService('Servo.Set',{pin:pin, angle: angle}, function(response) {
       if (response != null && response.error !== undefined) {
         alert(response.message);
@@ -152,6 +154,10 @@ function touchReadValue() {
 function motorWriteSpeed() {
   var motor = parseInt(document.getElementById("D1Motor.motor").value);
   
+  if (motor < 0 || motor > 1) {
+    return;
+  }
+  
   if (!motor_init) {
     callRPCService('D1Motor.Enable', {motor:motor, frequency: 1000}, function(response) {
       if (response == null) {
@@ -161,8 +167,10 @@ function motorWriteSpeed() {
       motorWriteSpeed();
     });
   } else {
-    var speed = parseInt(document.getElementById("D1Motor.speed").value);
+    var speed = parseInt(document.getElementById("D1Motor.input").value);
     var dir = 2;
+  
+    document.getElementById("D1Motor.speed").innerHTML = speed;
     
     if (speed < 0) {
       speed = -speed;
