@@ -141,11 +141,11 @@
       <tr>
         <td><strong>Motor (0 - 1)</strong></td>
         <td><strong>Speed (-100 - 100)</strong></td>
-        <td></td>
+        <td align="center" style="padding-left: 12px;"><a class="btn" onclick="motorStop()">Stop</a></td>
       </tr>
       <tr>
         <td><input type="number" id="D1Motor.motor"/></td>
-        <td><input type="range" min="-100" max="100" value="0" step="5" id="D1Motor.input" onchange="motorWriteSpeed()"/></td>
+        <td><input type="range" min="-100" max="100" value="0" step="10" id="D1Motor.input" onchange="motorWriteSpeed()"/></td>
         <td id="D1Motor.speed">0</td>
       </tr>
     </tbody></table>

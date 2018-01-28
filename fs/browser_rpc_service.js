@@ -154,7 +154,12 @@ function touchReadValue() {
 function motorWriteSpeed() {
   var motor = parseInt(document.getElementById("D1Motor.motor").value);
   
-  if (motor < 0 || motor > 1) {
+  if (motor < 0 || motor > 1 || isNaN(motor)) {
+    alert("No motor or invalid motor specified");
+    
+    document.getElementById("D1Motor.input").value = 0;
+    document.getElementById("D1Motor.speed").innerHTML = 0;
+    
     return;
   }
   
@@ -184,6 +189,24 @@ function motorWriteSpeed() {
       }
     });
   }
+}
+
+// Full stop to motor
+function motorStop() {
+  var motor = parseInt(document.getElementById("D1Motor.motor").value);
+  
+  if (motor < 0 || motor > 1 || isNaN(motor)) {
+    return;
+  }
+  
+  document.getElementById("D1Motor.input").value = 0;
+  document.getElementById("D1Motor.speed").innerHTML = 0;
+    
+  callRPCService('D1Motor.Move',{motor:motor, dir:0, speed: 0}, function(response) {
+    if (response != null && response.error !== undefined) {
+      alert(response.message);
+    }
+  });
 }
 
 // Reboots the microcontroller
