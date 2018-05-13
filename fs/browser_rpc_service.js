@@ -105,7 +105,7 @@ function pwmWriteValue() {
   var value = parseInt(document.getElementById("PWM.input").value);
   
   document.getElementById("PWM.value").innerHTML = value;
-  callRPCService('PWM.Set',{pin:pin, frequency:100, duty:(value / 100.0)}, function(response) {
+  callRPCService('PWM.Set',{pin:pin, frequency:1000, duty:(value / 100.0)}, function(response) {
       if (response != null && response.error !== undefined) {
         alert(response.message);
       }
